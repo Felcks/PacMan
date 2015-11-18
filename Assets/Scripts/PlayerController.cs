@@ -145,13 +145,13 @@ public class PlayerController : MonoBehaviour
 
 	private void ChangeSide()
 	{
-		if(this.transform.position.x < -4.7f)
+		if(this.transform.position.x < -4f)
 		{
-			this.transform.position = new Vector3(3.3f,transform.position.y,0);
+			this.transform.position = new Vector3(4f,transform.position.y,0);
 		}
-		if(this.transform.position.x > 3.3f)
+		if(this.transform.position.x > 4f)
 		{
-			this.transform.position = new Vector3(-4.7f,transform.position.y,0);
+			this.transform.position = new Vector3(-4f,transform.position.y,0);
 		}
 	}
 
@@ -198,7 +198,6 @@ public class PlayerController : MonoBehaviour
 			Destroy (c.gameObject);
 			this.score.AddScore();
 		}
-
 		if(c.gameObject.tag.Equals(Tags.decisionPoint))
 		{
 			onDecisionTile = true;

@@ -17,6 +17,7 @@ public class CreateTiles : MonoBehaviour
 	public GameObject continuosTiles;
 	public GameObject normalFoods;
 	public GameObject powerUps;
+    public GameObject extraSideTiles;
 
 
 	private int amountHorizontalTiles = 28;
@@ -101,35 +102,28 @@ public class CreateTiles : MonoBehaviour
 					d.name = "DecisionTile_" + addZeroX + i + addZeroY + j;
 					d.transform.parent = decisionTiles.transform;
 				}
-				if(MapCode.getInstance().map[MapCode.getInstance().map.Length - (1+i)][j] == 7 ||
-				   MapCode.getInstance().map[MapCode.getInstance().map.Length - (1+i)][j] == 8 || 
-				   MapCode.getInstance().map[MapCode.getInstance().map.Length - (1+i)][j] == 9 )
-				{
-					GameObject d = (GameObject)Instantiate (this.continuosTile, new Vector3 (width * j + width / 2 - worldEndPos.x / 2 + ((width * amountHorizontalTiles) / 8),
-					                                                                        height * i + height / 2 - worldEndPos.y), Quaternion.identity);
-					
-					d.name = "ContinuosTile_" + addZeroX + i + addZeroY + j;
-					d.transform.parent = continuosTiles.transform;
-				}
-			
+                 if (MapCode.getInstance().map[MapCode.getInstance().map.Length - (1 + i)][j] == 7 ||
+                    MapCode.getInstance().map[MapCode.getInstance().map.Length - (1 + i)][j] == 8 ||
+                    MapCode.getInstance().map[MapCode.getInstance().map.Length - (1 + i)][j] == 9)
+                 {
+                     GameObject d = (GameObject)Instantiate(this.continuosTile, new Vector3(width * j + width / 2 - worldEndPos.x / 2 + ((width * amountHorizontalTiles) / 8),
+                                                                                             height * i + height / 2 - worldEndPos.y), Quaternion.identity);
 
+                     d.name = "ContinuosTile_" + addZeroX + i + addZeroY + j;
+                     d.transform.parent = continuosTiles.transform;
+                 }
 				this.gameManager.tiles.Add (b);
 			}
-			/*for(int i=0; i<amountHorizontalTiles;i++)
-		{
-			for(int j=0; j<amountVerticalTiles;j++)
-			{
-				GameObject b = (GameObject)Instantiate(this.blackTile,new Vector3(width * i + width/2 - worldEndPos.x/2 + ((width * amountHorizontalTiles)/8),
-				                                                                  height * j + height/2 - worldEndPos.y,0),
-				                                       Quaternion.identity);
-				b.transform.parent = this.transform;
-				this.DefineType(b,i,j);
-				this.gameManager.tiles.Add(b);
-				this.gameManager.ground[i][j] = b;
-			
-			}
-		}
-		print (this.gameManager.tiles[0].transform.position);*/
+
+            //Criar tiles Extras!!!__!!
+            GameObject extra = (GameObject)Instantiate(this.blackTile, new Vector3(width * 28 + width / 2 - worldEndPos.x / 2 + ((width * amountHorizontalTiles) / 8),
+                                                                                      height * 18 + height / 2 - worldEndPos.y, 0),
+                                                           Quaternion.identity);
+            GameObject extra2 = (GameObject)Instantiate(this.blackTile, new Vector3(width * 28 + width / 2 - worldEndPos.x / 2 + ((width * amountHorizontalTiles) / 8),
+                                                                                      height * 18 + height / 2 - worldEndPos.y, 0),
+                                                           Quaternion.identity);
+            extra.transform.parent = this.extraSideTiles.transform;
+            extra2.transform.parent = this.extraSideTiles.transform;
 		}
 	}
 

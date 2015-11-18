@@ -30,8 +30,7 @@ public class Blinky : MonoBehaviour
 
 	void Update()
 	{
-		this.objetive = GameObject.Find ("PacMan(Clone)");
-
+		
 		if (this.nexTile == null)
 			return;
 
@@ -75,10 +74,12 @@ public class Blinky : MonoBehaviour
 		}
 		if(rightTile.tag.Equals(Tags.ground))
 		{
+            //print(rightTile.name.Substring(rightTile.name.Length - 2,2));
 			openList.Add(rightTile);
 		}
 		if(leftTile.tag.Equals(Tags.ground))
 		{
+            //print(rightTile.name.Substring(rightTile.name.Length - 2, 2));
 			openList.Add(leftTile);
 		}
 
@@ -90,15 +91,33 @@ public class Blinky : MonoBehaviour
 		GameObject betterTile = openList[0];
 		float betterDistance = 999;
 
+        GameObject lastTile = GameObject.Find("Ground_1827");
+        GameObject startTile = GameObject.Find("Ground_1800");
+
 		for(int i = 0; i<this.openList.Count; i++)
 		{
 			float distance = Vector3.Distance(openList[i].transform.position, objetive.transform.position);
+
+            float distanceLastTile = Vector3.Distance(openList[i].transform.position, lastTile.transform.position);
+            float distanceStartTile = Vector3.Distance(openList[i].transform.position, startTile.transform.position);
+            distanceLastTile += Vector3.Distance(startTile.transform.position, objetive.transform.position);
+            distanceStartTile += Vector3.Distance(lastTile.transform.position, objetive.transform.position);
+
 			if(distance < betterDistance)
 			{
 				betterDistance = distance;
 				betterTile = this.openList[i];
 			}
-
+            if (distanceLastTile < betterDistance)
+            {
+                betterDistance = distanceLastTile;
+                betterTile = this.openList[i];
+            }
+            if (distanceStartTile < betterDistance)
+            {
+                betterDistance = distanceStartTile;
+                betterTile = this.openList[i];
+            }
 		}
 
 		this.openList = new List<GameObject> ();
