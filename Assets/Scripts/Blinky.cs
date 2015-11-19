@@ -10,6 +10,7 @@ public class Blinky : MonoBehaviour
 	public GameObject objetive;
 	public GameObject nexTile;
 	public Vector3 currentDirection;
+	private Pathfinding pathfinding;
 
 	string posX;
 	string posY;
@@ -24,8 +25,10 @@ public class Blinky : MonoBehaviour
 		this.posY = this.name.Substring (this.name.Length - 2, 2);
 
 		
-		this.objetive = GameObject.Find ("PacMan(Clone)");
+		this.objetive = GameObject.FindWithTag(Tags.player);
 		this.GetAroundTiles();
+
+		this.pathfinding = new Pathfinding (this.objetive, this.gameObject);
 	}
 
 	void Update()

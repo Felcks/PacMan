@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NewBehaviourScript : MonoBehaviour 
+public class Pathfinding 
 {
+	GameObject objetive;
+	int objetivePosX;
+	int objetivePoxY;
+	GameObject you;
+	int yourPosX;
+	int yourPosY;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	private string yourPos;
+
+	public Pathfinding(GameObject you, GameObject objetive)
+	{
+
 	}
 }
