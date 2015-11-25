@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Collections;
 
-public class Blinky : MonoBehaviour
+public class Blinky : Ghost
 {
 	public List<GameObject> openList;
 	public List<GameObject> closedList;
 	public List<GameObject> rightWay;
 	public GameObject objetive;
 	public GameObject nexTile;
+    public GameObject lastTile;
+    public bool savedLastTile;
+    public GameObject lastTile2;
 	public Vector3 currentDirection;
 	string posX;
 	string posY;
@@ -24,12 +27,25 @@ public class Blinky : MonoBehaviour
 
 			
 		this.objetive = GameObject.FindWithTag (Tags.player);
+        this.ghostBehaviour = GHOSTBEHAVIOUR.CHASE;
+        this.scatterTile = GameObject.Find("Ground_3525");
+
 		this.GetAroundTiles();
 	}
 
 	void Update()
 	{
-		this.objetive = GameObject.FindWithTag (Tags.player);
+        if (Input.GetKeyDown(KeyCode.C))
+            this.ghostBehaviour = GHOSTBEHAVIOUR.CHASE;
+        if (Input.GetKeyDown(KeyCode.S))
+            this.ghostBehaviour = GHOSTBEHAVIOUR.SCATTER;
+
+
+        if (this.ghostBehaviour == GHOSTBEHAVIOUR.CHASE)
+            this.objetive = GameObject.FindWithTag(Tags.player);
+        else if (this.ghostBehaviour == GHOSTBEHAVIOUR.SCATTER)
+            this.objetive = this.scatterTile;
+
 
 		if (this.nexTile == null)
 			return;
@@ -63,19 +79,19 @@ public class Blinky : MonoBehaviour
 		{
 			rightTile = GameObject.Find("Ground_1800"); 
 		}
-		if(upTile.tag.Equals(Tags.ground))
+        if (upTile.tag.Equals(Tags.ground) && upTile != lastTile)
 		{
 			openList.Add(upTile);
 		}
-		if(downTile.tag.Equals(Tags.ground))
+		if(downTile.tag.Equals(Tags.ground) && downTile != lastTile)
 		{
 			openList.Add(downTile);
 		}
-		if(rightTile.tag.Equals(Tags.ground))
+        if (rightTile.tag.Equals(Tags.ground) && rightTile != lastTile)
 		{
 			openList.Add(rightTile);
 		}
-		if(leftTile.tag.Equals(Tags.ground))
+        if (leftTile.tag.Equals(Tags.ground) && leftTile != lastTile)
 		{
 			openList.Add(leftTile);
 		}
@@ -97,15 +113,26 @@ public class Blinky : MonoBehaviour
 						betterTile = this.openList[i];
 				}
 			}
-	
 			this.openList = new List<GameObject> ();
-			this.nexTile = betterTile;
+
+            if (nexTile == null)
+            {
+                this.nexTile = betterTile;
+                this.lastTile = this.nexTile;
+            }
+            else if (betterTile != nexTile)
+            {
+                this.lastTile = this.nexTile;
+                this.nexTile = betterTile;
+            }
+
+
+
 	}
 
 	void OnCollisionEnter2D(Collision2D c)
 	{
 		if (c.gameObject.tag.Equals (Tags.enemy)) {
-			print ("auheuhaehueahu");
 			this.GetComponent<Rigidbody2D> ().isKinematic = true;
 		}
 	}

@@ -11,6 +11,7 @@ public class Clyde : Ghost
 	public GameObject player;
 	public GameObject objetive;
 	public GameObject nexTile;
+    public GameObject lastTile;
 	public Vector3 currentDirection;
 
 	private string posX, posY;
@@ -19,12 +20,7 @@ public class Clyde : Ghost
 	void Start()
 	{
 		this.ghostBehaviour = GHOSTBEHAVIOUR.CHASE;
-		this.scatterTiles = new GameObject[]
-		{
-			GameObject.Find("Ground_0907"),
-			GameObject.Find("Ground_0301"),
-			GameObject.Find("Ground_0412")
-		};
+        this.scatterTile = GameObject.Find("Ground_0006");
 
 
 		this.player = GameObject.FindWithTag (Tags.player);
@@ -55,26 +51,50 @@ public class Clyde : Ghost
 		else
 		{
 			this.ghostBehaviour = GHOSTBEHAVIOUR.FSCATTER;
-			this.objetive = this.scatterTiles[0];
+            this.objetive = this.scatterTile;
+            this.GetAroundTiles();
 		}
 	}
 	
 	void Update()
 	{
+
+        print(this.ghostBehaviour);
 		if (this.nexTile == null)
 			return;
-
+        
+       
+        print(this.name);
 		if (ghostBehaviour == GHOSTBEHAVIOUR.CHASE) 
 		{
-			if (Vector3.Distance (this.transform.position, this.nexTile.transform.position) < 0.05f) {
-				this.name = "Clyde_" + this.nexTile.name.Substring (this.nexTile.name.Length - 4, 2) + "" + this.nexTile.name.Substring (this.nexTile.name.Length - 2, 2);
+			if (Vector3.Distance (this.transform.position, this.nexTile.transform.position) < 0.05f) 
+            {
 				this.CheckDistanceToPlayer ();
+                this.name = "Clyde_" + this.nexTile.name.Substring(this.nexTile.name.Length - 4, 2) + "" + this.nexTile.name.Substring(this.nexTile.name.Length - 2, 2);
 			}
 		}
 		else if(ghostBehaviour == GHOSTBEHAVIOUR.FSCATTER)
 		{
 
+            this.objetive = this.scatterTile;
+            if (Vector3.Distance(this.transform.position, this.nexTile.transform.position) < 0.05f)
+            {
+                this.CheckDistanceToPlayer();
+
+                this.name = "Clyde_" + this.nexTile.name.Substring(this.nexTile.name.Length - 4, 2) + "" + this.nexTile.name.Substring(this.nexTile.name.Length - 2, 2);
+            }
+           
 		}
+        else if(ghostBehaviour == GHOSTBEHAVIOUR.SCATTER)
+        {
+            this.objetive = this.scatterTile;
+            if (Vector3.Distance(this.transform.position, this.nexTile.transform.position) < 0.05f)
+            {
+                this.GetAroundTiles();
+
+                this.name = "Clyde_" + this.nexTile.name.Substring(this.nexTile.name.Length - 4, 2) + "" + this.nexTile.name.Substring(this.nexTile.name.Length - 2, 2);
+            }
+        }
 		
 		this.transform.position = Vector3.MoveTowards (this.transform.position, nexTile.transform.position, Time.deltaTime);
 	}
@@ -99,19 +119,19 @@ public class Clyde : Ghost
 		{
 			rightTile = GameObject.Find("Ground_1800"); 
 		}
-		if(upTile.tag.Equals(Tags.ground))
+        if (upTile.tag.Equals(Tags.ground) && upTile != lastTile)
 		{
 			openList.Add(upTile);
 		}
-		if(downTile.tag.Equals(Tags.ground))
+        if (downTile.tag.Equals(Tags.ground) && downTile != lastTile)
 		{
 			openList.Add(downTile);
 		}
-		if(rightTile.tag.Equals(Tags.ground))
+        if (rightTile.tag.Equals(Tags.ground) && rightTile != lastTile)
 		{
 			openList.Add(rightTile);
 		}
-		if(leftTile.tag.Equals(Tags.ground))
+        if (leftTile.tag.Equals(Tags.ground) && leftTile != lastTile )
 		{
 			openList.Add(leftTile);
 		}
@@ -134,8 +154,20 @@ public class Clyde : Ghost
 			}
 		}
 		
+        
 		this.openList = new List<GameObject> ();
-		this.nexTile = betterTile;
+
+        if (nexTile == null)
+        {
+            this.nexTile = betterTile;
+            this.lastTile = this.nexTile;
+        }
+        else if (betterTile != nexTile)
+        {
+            this.lastTile = this.nexTile;
+            this.nexTile = betterTile;
+        }
+
 	}
 
 }

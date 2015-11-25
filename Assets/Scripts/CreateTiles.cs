@@ -70,7 +70,7 @@ public class CreateTiles : MonoBehaviour
 				b.transform.parent = this.groundTiles.transform;
 				allGrounds[allGrounds.Count-1].Add(b);
 
-				if(MapCode.getInstance ().map [MapCode.getInstance().map.Length - (1 + i)] [j] == 10)
+				if(MapCode.getInstance ().map [MapCode.getInstance().map.Length - (1 + i)] [j] == 10 )
 				{
 					b.tag = Tags.wall;
 				}
@@ -116,6 +116,7 @@ public class CreateTiles : MonoBehaviour
                      d.name = "ContinuosTile_" + addZeroX + i + addZeroY + j;
                      d.transform.parent = continuosTiles.transform;
                  }
+                
 				this.gameManager.tiles.Add (b);
 			}
 
