@@ -27,8 +27,7 @@ public class Character
 				}
 			}
 		}
-		
-		Debug.Log (posName);
+
 		return posName;
 	}
 }

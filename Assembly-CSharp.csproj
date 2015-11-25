@@ -47,13 +47,17 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Blinky.cs" />
      <Compile Include="Assets\Scripts\Character.cs" />
+     <Compile Include="Assets\Scripts\Clyde.cs" />
      <Compile Include="Assets\Scripts\ContinuosTile.cs" />
      <Compile Include="Assets\Scripts\CreateTiles.cs" />
      <Compile Include="Assets\Scripts\DecisionTile.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Ghost.cs" />
+     <Compile Include="Assets\Scripts\Inky.cs" />
      <Compile Include="Assets\Scripts\MapCode.cs" />
      <Compile Include="Assets\Scripts\NormalFood.cs" />
      <Compile Include="Assets\Scripts\Pathfinding.cs" />
+     <Compile Include="Assets\Scripts\Pinky.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\ScoreManager.cs" />

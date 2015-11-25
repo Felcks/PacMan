@@ -81,6 +81,11 @@ public class PlayerController : MonoBehaviour
 
 	}
 
+	public int getCurrentDirection()
+	{
+		return (int)this.currentDirection;
+	}
+
 	private void ContinueDirection()
 	{
 		if(onContinuosTile)

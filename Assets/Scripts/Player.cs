@@ -5,15 +5,15 @@ public class Player : MonoBehaviour
 {
 	public Character character;
 
-	void Start()
+	void Awake()
 	{
 		character = new Character (this.gameObject);
-
+		
+		this.gameObject.name = "Pacman_" + character.GetPosName ();
 	}
 
 	void Update()
 	{
-
 		this.gameObject.name = "Pacman_" + character.GetPosName ();
 	}
 

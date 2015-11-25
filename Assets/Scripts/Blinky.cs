@@ -10,8 +10,6 @@ public class Blinky : MonoBehaviour
 	public GameObject objetive;
 	public GameObject nexTile;
 	public Vector3 currentDirection;
-	private Pathfinding pathfinding;
-
 	string posX;
 	string posY;
 
@@ -24,23 +22,21 @@ public class Blinky : MonoBehaviour
 		this.posX = this.name.Substring (this.name.Length - 4, 2);
 		this.posY = this.name.Substring (this.name.Length - 2, 2);
 
-		
-		this.objetive = GameObject.FindWithTag(Tags.player);
+			
+		this.objetive = GameObject.FindWithTag (Tags.player);
 		this.GetAroundTiles();
-
-		this.pathfinding = new Pathfinding (this.objetive, this.gameObject);
 	}
 
 	void Update()
 	{
-		
+		this.objetive = GameObject.FindWithTag (Tags.player);
+
 		if (this.nexTile == null)
 			return;
-
-
-		if(Vector3.Distance(this.transform.position, this.nexTile.transform.position) < 0.01f)
+	
+		if(Vector3.Distance(this.transform.position, this.nexTile.transform.position) < 0.05f)
 		{
-			this.name = "Blinky_" + this.nexTile.name.Substring (this.name.Length - 4, 2) + "" + this.nexTile.name.Substring (this.name.Length - 2, 2);
+			this.name = "Blinky_" + this.nexTile.name.Substring (this.nexTile.name.Length - 4, 2) + "" +  this.nexTile.name.Substring (this.nexTile.name.Length - 2, 2);
 			this.GetAroundTiles();
 		}
 
@@ -59,9 +55,9 @@ public class Blinky : MonoBehaviour
 		string addZeroY =  (index_Y <= 9) ? "0" : "";
 
 		GameObject upTile =  GameObject.Find ("Ground_"  + ((index_X + 1 <= 9) ? "0" : "") + (index_X + 1) + addZeroY + index_Y );
-		GameObject downTile =  GameObject.Find ("Ground_" + ((index_X - 1 <= 9) ? "0" : "") + ((index_X) - 1) + "" + addZeroY + index_Y );
-		GameObject rightTile =  GameObject.Find ("Ground_" + addZeroX + index_X + ((index_Y + 1 <= 9) ? "0" : "") + (index_Y + 1));
-		GameObject leftTile =  GameObject.Find ("Ground_" + addZeroX + index_X + ((index_Y-1 <=9) ? "0" : "") + (index_Y - 1));
+		GameObject downTile =  GameObject.Find ("Ground_"  + ((index_X - 1 <= 9) ? "0" : "") + ((index_X) - 1) + "" + addZeroY + index_Y );
+		GameObject rightTile =  GameObject.Find ("Ground_"  + addZeroX + index_X + ((index_Y + 1 <= 9) ? "0" : "") + (index_Y + 1));
+		GameObject leftTile =  GameObject.Find ("Ground_"  + addZeroX + index_X + ((index_Y-1 <=9) ? "0" : "") + (index_Y - 1));
 
 		if(index_Y == 27)
 		{
@@ -77,12 +73,10 @@ public class Blinky : MonoBehaviour
 		}
 		if(rightTile.tag.Equals(Tags.ground))
 		{
-            //print(rightTile.name.Substring(rightTile.name.Length - 2,2));
 			openList.Add(rightTile);
 		}
 		if(leftTile.tag.Equals(Tags.ground))
 		{
-            //print(rightTile.name.Substring(rightTile.name.Length - 2, 2));
 			openList.Add(leftTile);
 		}
 
@@ -94,36 +88,31 @@ public class Blinky : MonoBehaviour
 		GameObject betterTile = openList[0];
 		float betterDistance = 999;
 
-        GameObject lastTile = GameObject.Find("Ground_1827");
-        GameObject startTile = GameObject.Find("Ground_1800");
-
-		for(int i = 0; i<this.openList.Count; i++)
-		{
-			float distance = Vector3.Distance(openList[i].transform.position, objetive.transform.position);
-
-            float distanceLastTile = Vector3.Distance(openList[i].transform.position, lastTile.transform.position);
-            float distanceStartTile = Vector3.Distance(openList[i].transform.position, startTile.transform.position);
-            distanceLastTile += Vector3.Distance(startTile.transform.position, objetive.transform.position);
-            distanceStartTile += Vector3.Distance(lastTile.transform.position, objetive.transform.position);
-
-			if(distance < betterDistance)
+			for(int i = 0; i<this.openList.Count; i++)
 			{
-				betterDistance = distance;
-				betterTile = this.openList[i];
+				float distance = Vector3.Distance(openList[i].transform.position, objetive.transform.position);
+				if(distance < betterDistance)
+				{
+						betterDistance = distance;
+						betterTile = this.openList[i];
+				}
 			}
-            if (distanceLastTile < betterDistance)
-            {
-                betterDistance = distanceLastTile;
-                betterTile = this.openList[i];
-            }
-            if (distanceStartTile < betterDistance)
-            {
-                betterDistance = distanceStartTile;
-                betterTile = this.openList[i];
-            }
-		}
+	
+			this.openList = new List<GameObject> ();
+			this.nexTile = betterTile;
+	}
 
-		this.openList = new List<GameObject> ();
-		this.nexTile = betterTile;
+	void OnCollisionEnter2D(Collision2D c)
+	{
+		if (c.gameObject.tag.Equals (Tags.enemy)) {
+			print ("auheuhaehueahu");
+			this.GetComponent<Rigidbody2D> ().isKinematic = true;
+		}
+	}
+
+	void OnCollisionExit2D(Collision2D c)
+	{
+		if(c.gameObject.tag.Equals(Tags.enemy))
+			this.GetComponent<Rigidbody2D> ().isKinematic = false;
 	}
 }
