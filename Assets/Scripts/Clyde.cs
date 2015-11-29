@@ -12,6 +12,7 @@ public class Clyde : Ghost
 	public GameObject objetive;
 	public GameObject nexTile;
     public GameObject lastTile;
+    public bool savedLastTile;
 	public Vector3 currentDirection;
 
 	private string posX, posY;

@@ -14,6 +14,7 @@ public class Inky : MonoBehaviour
 	public PlayerController playerController;
 	public GameObject nexTile;
 	public Vector3 currentDirection;
+	public GameObject lastTile;
 	string posX;
 	string posY;
 	
@@ -155,22 +156,23 @@ public class Inky : MonoBehaviour
 		{
 			rightTile = GameObject.Find("Ground_1800"); 
 		}
-		if(upTile.tag.Equals(Tags.ground))
+		if (upTile.tag.Equals(Tags.ground) && upTile != lastTile)
 		{
 			openList.Add(upTile);
 		}
-		if(downTile.tag.Equals(Tags.ground))
+		if(downTile.tag.Equals(Tags.ground) && downTile != lastTile)
 		{
 			openList.Add(downTile);
 		}
-		if(rightTile.tag.Equals(Tags.ground))
+		if (rightTile.tag.Equals(Tags.ground) && rightTile != lastTile)
 		{
 			openList.Add(rightTile);
 		}
-		if(leftTile.tag.Equals(Tags.ground))
+		if (leftTile.tag.Equals(Tags.ground) && leftTile != lastTile)
 		{
 			openList.Add(leftTile);
 		}
+
 		
 		this.GoToBetterTile ();
 	}
@@ -191,6 +193,17 @@ public class Inky : MonoBehaviour
 		}
 		
 		this.openList = new List<GameObject> ();
-		this.nexTile = betterTile;
+		
+		if (nexTile == null)
+		{
+			this.nexTile = betterTile;
+			this.lastTile = this.nexTile;
+		}
+		else if (betterTile != nexTile)
+		{
+			this.lastTile = this.nexTile;
+			this.nexTile = betterTile;
+		}
+
 	}
 }

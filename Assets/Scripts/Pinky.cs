@@ -10,10 +10,10 @@ public class Pinky : MonoBehaviour
 	public GameObject objetive;
 	public GameObject fourTilesFoward;
 	public GameObject player;
-	public GameObject blinky;
 	public PlayerController playerController;
 	public GameObject nexTile;
 	public Vector3 currentDirection;
+	public GameObject lastTile;
 	string posX;
 	string posY;
 	
@@ -62,7 +62,6 @@ public class Pinky : MonoBehaviour
 
 		this.objetive = GameObject.Find ("Ground_" + addZeroX + "" + player_X + "" + addZeroY + "" + player_Y);
 		this.GetAroundTiles ();
-	
 	}
 	
 
@@ -71,15 +70,12 @@ public class Pinky : MonoBehaviour
 		
 		this.SetFourTilesFoward ();
 
-		
 		if (this.nexTile == null)
 			return;
-		
-		
+
 		if(Vector3.Distance(this.transform.position, this.nexTile.transform.position) < 0.01f)
 		{
 			this.name = "Pinky_" + this.nexTile.name.Substring (this.nexTile.name.Length - 4, 2) + "" +  this.nexTile.name.Substring (this.nexTile.name.Length - 2, 2);
-			
 			this.GetAroundTiles();
 		}
 		
@@ -90,8 +86,7 @@ public class Pinky : MonoBehaviour
 	{
 		this.posX = this.name.Substring (this.name.Length - 4, 2);
 		this.posY = this.name.Substring (this.name.Length - 2, 2);
-		
-		
+
 		int index_X = int.Parse (posX);
 		int index_Y = int.Parse (posY);
 		
@@ -107,19 +102,19 @@ public class Pinky : MonoBehaviour
 		{
 			rightTile = GameObject.Find("Ground_1800"); 
 		}
-		if(upTile.tag.Equals(Tags.ground))
+		if (upTile.tag.Equals(Tags.ground) && upTile != lastTile)
 		{
 			openList.Add(upTile);
 		}
-		if(downTile.tag.Equals(Tags.ground))
+		if(downTile.tag.Equals(Tags.ground) && downTile != lastTile)
 		{
 			openList.Add(downTile);
 		}
-		if(rightTile.tag.Equals(Tags.ground))
+		if (rightTile.tag.Equals(Tags.ground) && rightTile != lastTile)
 		{
 			openList.Add(rightTile);
 		}
-		if(leftTile.tag.Equals(Tags.ground))
+		if (leftTile.tag.Equals(Tags.ground) && leftTile != lastTile)
 		{
 			openList.Add(leftTile);
 		}
@@ -143,6 +138,17 @@ public class Pinky : MonoBehaviour
 		}
 		
 		this.openList = new List<GameObject> ();
-		this.nexTile = betterTile;
+		
+		if (nexTile == null)
+		{
+			this.nexTile = betterTile;
+			this.lastTile = this.nexTile;
+		}
+		else if (betterTile != nexTile)
+		{
+			this.lastTile = this.nexTile;
+			this.nexTile = betterTile;
+		}
+
 	}
 }
