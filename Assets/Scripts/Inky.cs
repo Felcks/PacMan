@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 
-public class Inky : MonoBehaviour
+public class Inky : Ghost
 {
 	public List<GameObject> openList;
 	public List<GameObject> closedList;
@@ -17,7 +17,11 @@ public class Inky : MonoBehaviour
 	public GameObject lastTile;
 	string posX;
 	string posY;
-	
+	private bool started;
+
+	public Material frigh;
+	public Material defaultMat;
+
 	void Start()
 	{
 		openList = new List<GameObject> ();
@@ -26,13 +30,57 @@ public class Inky : MonoBehaviour
 		
 		this.posX = this.name.Substring (this.name.Length - 4, 2);
 		this.posY = this.name.Substring (this.name.Length - 2, 2);
-		
-		
+
 		this.player = GameObject.FindWithTag (Tags.player);
 		this.playerController = this.player.GetComponent<PlayerController> ();
 		this.SetBlinky ();
-		this.SetTwoTilesFoward ();
 
+		this.scatterTile = GameObject.Find ("Ground_0027");
+		this.ghostBehaviour = GHOSTBEHAVIOUR.NONE;
+
+	}
+
+	private void Frightened()
+	{
+		this.posX = this.name.Substring (this.name.Length - 4, 2);
+		this.posY = this.name.Substring (this.name.Length - 2, 2);
+		
+		int index_X = int.Parse (posX);
+		int index_Y = int.Parse (posY);
+		
+		string addZeroX =  (index_X <= 9) ? "0" : "";
+		string addZeroY =  (index_Y <= 9) ? "0" : "";
+		
+		GameObject upTile =  GameObject.Find ("Ground_"  + ((index_X + 1 <= 9) ? "0" : "") + (index_X + 1) + addZeroY + index_Y );
+		GameObject downTile =  GameObject.Find ("Ground_"  + ((index_X - 1 <= 9) ? "0" : "") + ((index_X) - 1) + "" + addZeroY + index_Y );
+		GameObject rightTile =  GameObject.Find ("Ground_"  + addZeroX + index_X + ((index_Y + 1 <= 9) ? "0" : "") + (index_Y + 1));
+		GameObject leftTile =  GameObject.Find ("Ground_"  + addZeroX + index_X + ((index_Y-1 <=9) ? "0" : "") + (index_Y - 1));
+		
+		if(index_Y == 27)
+		{
+			rightTile = GameObject.Find("Ground_1800"); 
+		}
+		if (upTile.tag.Equals(Tags.ground) && upTile != lastTile)
+		{
+			openList.Add(upTile);
+		}
+		if(downTile.tag.Equals(Tags.ground) && downTile != lastTile)
+		{
+			openList.Add(downTile);
+		}
+		if (rightTile.tag.Equals(Tags.ground) && rightTile != lastTile)
+		{
+			openList.Add(rightTile);
+		}
+		if (leftTile.tag.Equals(Tags.ground) && leftTile != lastTile)
+		{
+			openList.Add(leftTile);
+		}
+		
+		int sortedTileIndex = Random.Range (0, openList.Count - 1);
+		this.lastTile = this.nexTile;
+		this.nexTile = this.openList[sortedTileIndex];
+		this.openList = new List<GameObject> ();
 	}
 
    private void SetBlinky()
@@ -88,7 +136,6 @@ public class Inky : MonoBehaviour
 		vector = vector * 2;
 		this.objetive = this.GetGroundNextVector (vector);
 		this.GetAroundTiles ();
-	
 	}
 
 	private GameObject GetGroundNextVector(Vector3 pos)
@@ -114,12 +161,15 @@ public class Inky : MonoBehaviour
 	}
 	void Update()
 	{		
-		
-
-		/*if(Input.GetKeyDown(KeyCode.Return))
+		if (this.ghostBehaviour == GHOSTBEHAVIOUR.NONE)
+			return;
+		else if(this.ghostBehaviour != GHOSTBEHAVIOUR.NONE && this.started == false)
 		{
-			this.SetTwoTilesFoward();
-		}*/
+			this.started = true;
+			this.SetTwoTilesFoward ();
+		}
+
+
 
 		if (this.nexTile == null)
 			return;
@@ -128,11 +178,24 @@ public class Inky : MonoBehaviour
 		if(Vector3.Distance(this.transform.position, this.nexTile.transform.position) < 0.01f)
 		{
 			this.name = "Inky_" + this.nexTile.name.Substring (this.nexTile.name.Length - 4, 2) + "" +  this.nexTile.name.Substring (this.nexTile.name.Length - 2, 2);
-			this.SetTwoTilesFoward ();
+			if (this.ghostBehaviour == GHOSTBEHAVIOUR.CHASE)
+				this.SetTwoTilesFoward ();
+			else if (this.ghostBehaviour == GHOSTBEHAVIOUR.SCATTER) 
+			{
+				this.objetive = this.scatterTile;
+				GetAroundTiles ();
+			}
+			else if(this.ghostBehaviour == GHOSTBEHAVIOUR.FRIGHTENED)
+			{
+				this.Frightened();
+				GetComponent<SpriteRenderer>().material = frigh;
+				this.transform.position = new Vector3 (this.transform.position.x, this.transform.position.y, -2);
+			}
+			//this.SetTwoTilesFoward ();
 			//this.GetAroundTiles();
 		}
 		
-		this.transform.position = Vector3.MoveTowards (this.transform.position, nexTile.transform.position, Time.deltaTime);
+		this.transform.position = Vector3.MoveTowards (this.transform.position, nexTile.transform.position, Time.deltaTime * speed);
 	}
 	
 	public void GetAroundTiles()

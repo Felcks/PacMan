@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 	public int objetiveIndex;
 	public GameManager gameManager;
 	public ScoreManager score;
+	private float speed;
 
 	private bool onDecisionTile;
 	private GameObject decisionTile;
@@ -22,6 +23,15 @@ public class PlayerController : MonoBehaviour
 	void Start()
 	{
 		this.anim = this.GetComponent<Animator> ();
+		this.speed = 0;
+		this.anim.speed = 0;
+
+	}
+
+	public void StartGame()
+	{
+		this.anim.speed = 0.5f;
+		this.speed = 1.5f;
 	}
 
 	void FixedUpdate()
@@ -30,7 +40,7 @@ public class PlayerController : MonoBehaviour
 		this.ContinueDirection ();
 		this.ChangeSide ();
 
-		this.transform.Translate (this.GetObjetive() * Time.deltaTime);
+		this.transform.Translate (this.GetObjetive() * Time.deltaTime * this.speed);
 
 		if(Input.GetKeyDown(KeyCode.RightArrow) )
 		{
@@ -90,7 +100,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if(onContinuosTile)
 		{
-			if(Vector3.Distance(this.transform.position,this.continuosTile.transform.position) < 0.01f)
+			if(Vector3.Distance(this.transform.position,this.continuosTile.transform.position) < 0.02f)
 			{
 				this.transform.position = this.continuosTile.transform.position;
 				DIRECTION direction1 = continuosTile.GetComponent<ContinuosTile>().goDirection1;
@@ -186,22 +196,17 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-
-	void OnCollisionEnter2D(Collision2D c)
-	{
-		if(c.gameObject.tag.Equals(Tags.enemy))
-		{
-			this.SaveHighScore();
-			Application.LoadLevel(Application.loadedLevel);
-		}
-	}
-
 	void OnTriggerEnter2D(Collider2D c)
 	{
 		if (c.gameObject.tag == Tags.normalFood) 
 		{
 			Destroy (c.gameObject);
 			this.score.AddScore();
+		}
+		if(c.gameObject.tag == Tags.powerUp)
+		{
+			Destroy(c.gameObject);
+			this.gameManager.StartFightened();
 		}
 		if(c.gameObject.tag.Equals(Tags.decisionPoint))
 		{
@@ -212,6 +217,11 @@ public class PlayerController : MonoBehaviour
 		{
 			onContinuosTile = true;
 			this.continuosTile = c.gameObject;
+		}
+		if(c.gameObject.tag.Equals(Tags.enemy) && c.gameObject.GetComponent<Ghost>().ghostBehaviour != GHOSTBEHAVIOUR.FRIGHTENED)
+		{
+			this.SaveHighScore();
+			Application.LoadLevel(Application.loadedLevel);
 		}
 	}
 
